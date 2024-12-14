@@ -45,14 +45,5 @@ pipeline {
             }
         }
 
-        stage('Kubernetes Deploy - UAT') {        
-            when {
-                branch 'master'
-            }
-            steps {
-                kubernetesEKSHelmDeploy('$dockerImage', '$dockerTag', '$repoName', 'awsCred', 'us-east-1', 'test1', 'uat')
-            }
-        }
-
     }
 }
