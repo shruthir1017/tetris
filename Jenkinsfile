@@ -10,13 +10,13 @@ pipeline {
         gitRepoURL = "${params.GIT_URL}"
         gitBranchName = "${params.BRANCH_NAME}"
         repoName = "${params.repository}"
-        dockerImage = "891543987898.dkr.ecr.ap-south-1.amazonaws.com/${repoName}"
+        dockerImage = "654654138345.dkr.ecr.us-east-1.amazonaws.com/${repoName}"
         gitCommit = "${GIT_COMMIT[0..6]}"
         dockerTag = "${params.BRANCH_NAME}-${gitCommit}"
     }
      
 
-    agent {label 'docker'}
+    agent {label 'slave-1'}
     stages {
         stage('Git Checkout') {
             steps {
@@ -32,7 +32,7 @@ pipeline {
 
         stage('Docker Push') {
             steps {
-                dockerECRImagePush('$dockerImage', '$dockerTag', '$repoName', 'awsCred', 'ap-south-1')
+                dockerECRImagePush('$dockerImage', '$dockerTag', '$repoName', 'awsCred', 'us-east-1')
             }
         }
 
@@ -41,7 +41,7 @@ pipeline {
                 branch 'development'
             }
             steps {
-                kubernetesEKSHelmDeploy('$dockerImage', '$dockerTag', '$repoName', 'awsCred', 'ap-south-1', 'opq', 'dev')
+                kubernetesEKSHelmDeploy('$dockerImage', '$dockerTag', '$repoName', 'awsCred', 'us-east-1', 'test1', 'dev')
             }
         }
 
@@ -50,7 +50,7 @@ pipeline {
                 branch 'master'
             }
             steps {
-                kubernetesEKSHelmDeploy('$dockerImage', '$dockerTag', '$repoName', 'awsCred', 'ap-south-1', 'opq', 'uat')
+                kubernetesEKSHelmDeploy('$dockerImage', '$dockerTag', '$repoName', 'awsCred', 'us-east-1', 'test1', 'uat')
             }
         }
 
